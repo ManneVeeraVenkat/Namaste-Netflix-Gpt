@@ -8,12 +8,12 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+
 import { useDispatch } from "react-redux";
 import { addUser } from "../utiles/userSlice";
+import { Bg_Pic } from "../utiles/constants";
 
 const Login = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isSignInForm, setLoginForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -47,7 +47,6 @@ const Login = () => {
                 addUser({ uid: uid, email: email, displayName: displayName })
               );
               // Profile updated!
-              navigate("/browse");
             })
             .catch((error) => {
               // An error occurred
@@ -72,7 +71,6 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
 
-          navigate("/browse");
           // ...
         })
         .catch((error) => {
@@ -87,10 +85,7 @@ const Login = () => {
     <div>
       <Header />
       <div className="absolute">
-        <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/2e07bc25-8b8f-4531-8e1f-7e5e33938793/e4b3c14a-684b-4fc4-b14f-2b486a4e9f4e/IN-en-20240219-popsignuptwoweeks-perspective_alpha_website_medium.jpg"
-          alt="logo"
-        />
+        <img src={Bg_Pic} alt="logo" />
       </div>
       <form
         onSubmit={(e) => {

@@ -1,24 +1,43 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from "react";
-import { signOut } from "firebase/auth";
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utiles/firebase";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, removeUser } from "../utiles/userSlice";
+import { Logo_url, User_Avatar } from "../utiles/constants";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isHover, setHover] = useState(false);
   const user = useSelector((store) => store.user);
-  const navigate = useNavigate();
 
   const handleSignOut = () => {
     signOut(auth)
-      .then(() => {
-        navigate("/");
-      })
+      .then(() => {})
       .catch((error) => {
         // Handle error
       });
   };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        //user sign in or sing up
+        const { uid, email, displayName } = user;
+        dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
+        navigate("/browse");
+        // ...
+      } else {
+        // User is signed out
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+    //unsubscribe when component unmounts
+    return () => unsubscribe();
+  }, []);
 
   const handleMouseHover = () => {
     setHover(!isHover);
@@ -34,11 +53,7 @@ const Header = () => {
 
   return (
     <div className="absolute w-screen px-10 py-2 bg-gradient-to-b from-black z-10 flex justify-between">
-      <img
-        className="w-44"
-        src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-        alt="logo"
-      />
+      <img className="w-44" src={Logo_url} alt="logo" />
 
       {user && (
         <div className="flex p-2 items-center">
@@ -51,7 +66,7 @@ const Header = () => {
             <img
               className="w-8 h-8 rounded my-2 cursor-pointer"
               alt="profileicon"
-              src="https://occ-0-4344-3663.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABcbiyWyRsavP1cuTeuv2LwopI3TOeGeWmr-Wu2P7L4zvKrE74V9ONb7SvmexaWLMYpdiA8e0YOZTG5Oh8AOV9aewaIpChxU.png?r=258"
+              src={User_Avatar}
               onMouseEnter={handleMouseHover}
             />
 
