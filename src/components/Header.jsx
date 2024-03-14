@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utiles/userSlice";
 import { Logo_url, User_Avatar } from "../utiles/constants";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -58,7 +60,9 @@ const Header = () => {
       {user && (
         <div className="m-2 flex items-center">
           <div className="flex flex-wrap mr-[400px] cursor-pointer space-x-4">
-            <span className="text-white">Home</span>
+            <Link to="/browse">
+              <span className="text-white">Home</span>
+            </Link>
             <span className="text-white">Movies</span>
             <span className="text-white">Tv Shows</span>
             <span className="text-white">New & Popular</span>
